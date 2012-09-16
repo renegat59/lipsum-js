@@ -35,7 +35,8 @@ var lipsumContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pe
             	useHtmlParagraphs: false,
             	paragraphs: 0,
             	words: 0,
-            	sentences: 0
+            	sentences: 0,
+            	service: null
             };
             
             var options = $.extend(defaults, options);
@@ -56,50 +57,72 @@ var lipsumContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pe
             	throw "You can set only ONE of the following: paragraphs, words, sentences. " + optionsChecksum + " parameters received."; 
             }
             
+            var lipsumFeed = ''; 
+            if(options.service != null){
+            	$.ajax({
+            		url:options.service,
+            		success:function(data){
+            			lipsumFeed = data.feed;
+                	},
+                	async:false,
+                	dataType:'json',
+                	type:'GET'
+            	});
+            } else {
+            	lipsumFeed = lipsumContent;
+            }
+            
             //Iterate over the current set of matched elements
             this.each((function() {
             	
+            	function makeParagraph(text, options){
+            		var paragraph = options.useHtmlParagraphs ? '<p>' : '';
+            		paragraph += text;
+            		paragraph += options.useHtmlParagraphs ? '</p>\r\n' : '\r\n';
+            		return paragraph;
+            	}
+            	
             	function generateParas(options){
-            		var paras = lipsumContent.split("\r");
+            		var paras = lipsumFeed.split("\r");
             		var text = "";
             		if(!options.randomize){
             			for(var i = 0; i<options.paragraphs; i++){
-            				text += paras[i%paras.length]+"\r\n";
+            				text += makeParagraph(paras[i%paras.length], options);
             			}
             		}
             		else{
             			for(var i = 0; i<options.paragraphs; i++){
-            				text += paras[Math.floor((Math.random()*paras.length))]+"\r\n";
+            				text += makeParagraph(paras[Math.floor((Math.random()*paras.length))], options);
             			}
             		}
             		return text;
             	}
             	
             	function generateWords(options){
-            		var newContent = lipsumContent.replace("\r", "");
+            		var newContent = lipsumFeed.replace("\r", "");
             		var words = newContent.split(" ");
             		var text = "";
-            		if(!options.randomize){
-            			for(var i = 0; i<options.words; i++){
-            				text += words[i%words.length]+" ";
-            				if(i!=0 && i%50==0){
-            					text += ".\r\n"
-            				}
-            			}
-            		}
-            		else{
-            			for(var i = 0; i<options.words; i++){
-            				text += words[Math.floor((Math.random()*words.length))]+" ";
-            				if(i!=0 && i%50==0){
-            					text += ".\r\n"
-            				}
-            			}
-            		}
+            		
+            		var para = "";
+        			for(var i = 0; i<options.words; i++){
+        				if(!options.randomize){
+        					para += words[i%words.length]+" ";
+                		}
+        				else {
+        					para += words[Math.floor((Math.random()*words.length))]+" ";
+        				}
+        				if(i!=0 && i%50==0 || i==options.words-1){
+        					para = makeParagraph(para+".", options);
+        					text += para;
+        					para = "";
+        				}
+        			}
+        			
             		return text;
             	}
             	
             	function generateSentences(options){
-            		var newContent = lipsumContent.replace("\r", "");
+            		var newContent = lipsumFeed.replace("\r", "");
             		var sentences = newContent.split(".");
             		var text = "";
             		if(!options.randomize){
@@ -112,7 +135,7 @@ var lipsumContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pe
             				text += sentences[Math.floor((Math.random()*sentences.length))]+". ";
             			}
             		}
-            		return text;
+            		return makeParagraph(text, options);
             	}
             	
             	return function(){
@@ -129,7 +152,7 @@ var lipsumContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pe
 	            	if(o.sentences>0){
 	            		lipsumText = generateSentences(o);
 	            	}
-	            	obj.text(lipsumText);
+	            	obj.html(lipsumText);
             	};
             })());
         }

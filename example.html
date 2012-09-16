@@ -4,7 +4,7 @@
 	  <title>Lorem Ipsum generator example</title>
 	  <meta charset="utf-8">
 	  <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
-	  <script type="text/javascript" src="js/lipsum-0.1.js"></script>
+	  <script type="text/javascript" src="js/lipsum-0.2.js"></script>
 	  <script type="text/javascript" charset="utf-8">
 	  // <![CDATA[
 	   	$(document).ready(function () {
@@ -12,18 +12,30 @@
 	   		$('#2_random_paragraph_div').loremIpsum({randomize:true});
 	   		$('#50_words_div').loremIpsum({words:50});
 	   		$('#3_sentences_div').loremIpsum({sentences:3});
+	   		$('#3_sentences_service_div').loremIpsum({sentences:2, service:'feed.php', randomize: true});
+	   		$('#10_words_service_div_html').loremIpsum({words:10, service:'feed.php', randomize: true, useHtmlParagraphs:true});
 		});
 	  // ]]>
 	  </script>
+	  <style type="text/css">
+	  	div p{
+	  		margin-left:20px;
+	  		font-style: italic;
+	  	}
+	  </style>
 	</head>
 	<body>
 		<p>2 paras:</p>
-	  	<div style="background:#ff0; width:300px; height:auto;" id="2_paragraph_div">sd</div>
+	  	<div style="background:#ff0; width:300px; height:auto;" id="2_paragraph_div">test</div>
 	  	<p>2 random paras:</p>
-	  	<div style="background:#ff0; width:300px; height:auto;" id="2_random_paragraph_div">sd</div>
+	  	<div style="background:#ff0; width:300px; height:auto;" id="2_random_paragraph_div">test</div>
 	  	<p>50 words:</p>
-	  	<div style="background:#ff0; width:300px; height:auto;" id="50_words_div">sd</div>
+	  	<div style="background:#ff0; width:300px; height:auto;" id="50_words_div">test</div>
 	  	<p>3 sentences:</p>
-	  	<div style="background:#ff0; width:300px; height:auto;" id="3_sentences_div">sd</div>
+	  	<div style="background:#ff0; width:300px; height:auto;" id="3_sentences_div">test</div>
+	  	<p>3 sentences from service:</p>
+	  	<div style="background:#ff0; width:300px; height:auto;" id="3_sentences_service_div">test</div>
+	  	<p>10 words with html paragraphs:</p>
+	  	<div style="background:#ff0; width:300px; height:auto;" id="10_words_service_div_html">test</div>
 	</body>
 </html>
